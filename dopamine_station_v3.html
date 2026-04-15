@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Дофаминовая Станция</title>
+    <style>
+        :root {
+            --bg-color: #fff9f9;
+            --primary-color: #ff8fa3;
+            --secondary-color: #ffb3c1;
+            --text-color: #4a4a4a;
+            --accent-color: #fb6f92;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(255, 143, 163, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+            color: var(--accent-color);
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        button {
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 20px;
+            background-color: var(--white);
+            color: var(--text-color);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            outline: none;
+            width: 100%;
+        }
+
+        button:active {
+            transform: scale(0.96);
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background-color: var(--accent-color);
+        }
+
+        .choice-btn {
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .choice-btn span {
+            font-size: 1.1rem;
+        }
+
+        /* Roulette Animation */
+        .roulette-box {
+            height: 80px;
+            overflow: hidden;
+            margin: 15px 0;
+            border-radius: 15px;
+            background: rgba(255, 143, 163, 0.1);
+            width: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--accent-color);
+            padding: 10px;
+            font-size: 1.05rem;
+        }
+
+        /* Floating Hearts Decoration */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--primary-color);
+            opacity: 0.3;
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts" id="hearts-container"></div>
+
+    <div class="container">
+        <!-- Screen 1: Intro -->
+        <div id="screen-1" class="screen active">
+            <h1>Добро пожаловать на дофаминовую станцию 😄</h1>
+            <p>Тебе предстоит сделать очень сложный выбор…</p>
+            <button class="btn-primary" onclick="nextScreen(2)">Начать</button>
+        </div>
+
+        <!-- Screen 2: Choice -->
+        <div id="screen-2" class="screen">
+            <h1>Выбери свой уровень дофамина на сегодня:</h1>
+            <div class="btn-group">
+                <button class="choice-btn" onclick="selectOption('🛴 Быстрый дофамин — прокатиться на самокате')">
+                    <span>🛴</span> Быстрый дофамин — прокатиться на самокате
+                </button>
+                <button class="choice-btn" onclick="selectOption('☕ Медленный дофамин — кофе и разговоры')">
+                    <span>☕</span> Медленный дофамин — кофе и разговоры
+                </button>
+                <button class="choice-btn" onclick="selectOption('🚶 Лёгкий дофамин — прогулка без плана')">
+                    <span>🚶</span> Лёгкий дофамин — прогулка без плана
+                </button>
+                <button class="choice-btn" onclick="selectOption('📸 Личная фотосессия — я буду твоим фотографом')">
+                    <span>📸</span> Личная фотосессия — я буду твоим фотографом
+                </button>
+                <button class="choice-btn" onclick="selectOption('😏 Я предложу тебе более интересный вариант')">
+                    <span>😏</span> Я предложу тебе более интересный вариант
+                </button>
+                <button class="choice-btn" onclick="randomChoice()">
+                    <span>🎲</span> Довериться судьбе
+                </button>
+            </div>
+            <div id="roulette" class="roulette-box"></div>
+        </div>
+
+        <!-- Screen 3: Result -->
+        <div id="screen-3" class="screen">
+            <h1>Похоже, сегодня тебе показан:</h1>
+            <p id="selected-result" style="font-weight: bold; color: var(--accent-color); font-size: 1.2rem; padding: 0 10px;"></p>
+            <p>Готова проверить это в реальности?</p>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="nextScreen(4)">😏 Да</button>
+                <button onclick="teaseUser()">🤔 Мне нужно подумать</button>
+            </div>
+        </div>
+
+        <!-- Screen 4: Final -->
+        <div id="screen-4" class="screen">
+            <h1 style="font-size: 2.2rem;">💖</h1>
+            <h1>Отлично. Тогда я забираю тебя сегодня 😄</h1>
+        </div>
+    </div>
+
+    <script>
+        const options = [
+            '🛴 Быстрый дофамин — прокатиться на самокате',
+            '☕ Медленный дофамин — кофе и разговоры',
+            '🚶 Лёгкий дофамин — прогулка без плана',
+            '📸 Личная фотосессия — я буду твоим фотографом',
+            '😏 Я предложу тебе более интересный вариант'
+        ];
+
+        function nextScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNum}`).classList.add('active');
+        }
+
+        function selectOption(val) {
+            document.getElementById('selected-result').innerText = val;
+            nextScreen(3);
+        }
+
+        function randomChoice() {
+            const roulette = document.getElementById('roulette');
+            const btnGroup = document.querySelector('#screen-2 .btn-group');
+            
+            btnGroup.style.display = 'none';
+            roulette.style.display = 'flex';
+            
+            let counter = 0;
+            const interval = setInterval(() => {
+                roulette.innerText = options[counter % options.length];
+                counter++;
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                const finalChoice = options[Math.floor(Math.random() * options.length)];
+                roulette.innerText = finalChoice;
+                
+                setTimeout(() => {
+                    selectOption(finalChoice);
+                    // Reset for potential back navigation
+                    btnGroup.style.display = 'flex';
+                    roulette.style.display = 'none';
+                }, 1000);
+            }, 2000);
+        }
+
+        function teaseUser() {
+            alert("Ой, кнопка 'подумать' временно не работает. Придется нажать 'Да'! 😉");
+        }
+
+        // Create background hearts
+        const heartsContainer = document.getElementById('hearts-container');
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heartsContainer.appendChild(heart);
+        }
+    </script>
+</body>
+</html>
